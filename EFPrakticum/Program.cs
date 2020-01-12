@@ -39,6 +39,7 @@ namespace EFPrakticum
                     default:
                         break;
                 }
+                Console.WriteLine();
             }
 
             Console.WriteLine("\nBedankt voor uw medewerking, tot een volgende keer.\nKlik op ENTER om te beëindigen.");
@@ -65,6 +66,7 @@ namespace EFPrakticum
                                       ord.KlantNaam.PadRight(40) +
                                       ord.WerknemerNaam.PadRight(14));
                 }
+                Console.WriteLine();
             }
 
             void ShowOrderDetail()
@@ -83,8 +85,8 @@ namespace EFPrakticum
                                       "Productnaam".PadRight(40) +
                                       "Aantal".PadRight(10) +
                                       "Eenheidsprijs".PadRight(15) +
-                                      "Lijnwaard".PadRight(10));
-                    Console.WriteLine(emptyString.PadRight(87));
+                                      "Lijnwaarde".PadRight(10));
+                    Console.WriteLine(emptyString.PadRight(87, '-'));
                     foreach (var detail in orderdetails)
                     {
                         var product = detail.Eenheidsprijs * detail.Aantal;
@@ -99,6 +101,7 @@ namespace EFPrakticum
                 {
                     Console.WriteLine("Je gaf geen geldig order id, probeer later opnieuw");
                 }
+                Console.WriteLine();
             }
 
             void ShowVerkoopPerLanden()
@@ -108,12 +111,12 @@ namespace EFPrakticum
                              from d in db.OrderDetails
                              where c.CustomerId == o.CustomerId
                              where o.OrderId == d.OrderId
-                             group d by new { c.Country } into cByCat
-                             orderby cByCat.Key.Country
+                             group d by new { c.Country } into VerkoopPerLand
+                             orderby VerkoopPerLand.Key.Country
                              select new
                              {
-                                 Land = cByCat.Key.Country,
-                                 Hoeveelheid = cByCat.Sum(d => (d.Quantity * d.UnitPrice))
+                                 Land = VerkoopPerLand.Key.Country,
+                                 Hoeveelheid = VerkoopPerLand.Sum(d => (d.Quantity * d.UnitPrice))
                              };
 
                 if (result.Count() != 0)
@@ -131,6 +134,7 @@ namespace EFPrakticum
                 {
                     Console.WriteLine("De zoekactie gaf geef resultaat terug.");
                 }
+                Console.WriteLine();
             }
 
             void ShowLandDetails()
@@ -141,8 +145,8 @@ namespace EFPrakticum
                              join o in db.Orders on c.CustomerId equals o.CustomerId
                              join d in db.OrderDetails on o.OrderId equals d.OrderId
                              where c.Country == land
-                             group d by new { c.CustomerId, c.CompanyName } into kByCat
-                             select new { KlantID = kByCat.Key.CustomerId, Klantnaam = kByCat.Key.CompanyName, Totaal = kByCat.Sum(d => (d.Quantity * d.UnitPrice))};
+                             group d by new { c.CustomerId, c.CompanyName } into LandDetails
+                             select new { KlantID = LandDetails.Key.CustomerId, Klantnaam = LandDetails.Key.CompanyName, Totaal = LandDetails.Sum(d => (d.Quantity * d.UnitPrice))};
                 if (result.Count() != 0)
                 {
                     Console.WriteLine("KlantId".PadRight(10) + "Klantnaam".PadRight(30) + "Totaal");
@@ -158,6 +162,7 @@ namespace EFPrakticum
                 {
                     Console.WriteLine("De zoekactie gaf geef resultaat terug.");
                 }
+                Console.WriteLine();
             }
 
             void ShowKlantIdDetails()
@@ -172,13 +177,13 @@ namespace EFPrakticum
                                  o.OrderId,
                                  o.OrderDate,
                                  o.ShippedDate
-                             } into dByCat
+                             } into KlantDetails
                              select new
                              {
-                                 OrderID = dByCat.Key.OrderId,
-                                 OrderDatum = dByCat.Key.OrderDate,
-                                 Verzenddatum = dByCat.Key.ShippedDate,
-                                 Totaal = dByCat.Sum(d => d.Quantity * d.UnitPrice)
+                                 OrderID = KlantDetails.Key.OrderId,
+                                 OrderDatum = KlantDetails.Key.OrderDate,
+                                 Verzenddatum = KlantDetails.Key.ShippedDate,
+                                 Totaal = KlantDetails.Sum(d => d.Quantity * d.UnitPrice)
                              };
 
                 if (result.Count() != 0)
@@ -198,6 +203,7 @@ namespace EFPrakticum
                 {
                     Console.WriteLine("De zoekactie gaf geef resultaat terug.");
                 }
+                Console.WriteLine();
             }
         }
     }
